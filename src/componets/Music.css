@@ -1,0 +1,52 @@
+.player-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.player {
+  max-width: 500px;
+  width: 96%;
+  margin: 0 auto;
+  margin-top: 100px;
+  background-color: rgba(213, 213, 213, 0.811);
+  border-radius: 5px;
+}
+
+.audio-player {
+  background-color: rgb(209, 209, 242);
+}
+.list-container {
+  padding: 0;
+  height: 440px;
+  overflow: scroll;
+}
+
+.player-list {
+  padding: 13px;
+  list-style-type: none;
+  cursor: pointer;
+}
+.player-list + .player-list {
+  border-top: 2px solid rgb(177, 177, 237);
+}
+.isActive {
+  background-color: rgb(144, 144, 229);
+}
+
+.btns {
+  background: none;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icons {
+  font-size: 24px;
+  cursor: pointer;
+}
+.icons path {
+  stroke: #868686;
+}
