@@ -1,0 +1,13 @@
+:root {
+  --player: rgb(209, 209, 242);
+  --bg: rgba(213, 213, 213, 0.811);
+  --active: rgb(144, 144, 229);
+  --border: rgb(177, 177, 237);
+}
+
+[data-theme="dark"] {
+  --player: #ccddcc;
+  --bg: rgba(213, 213, 213, 0.811);
+  --active: #ddcccc;
+  --border: #eca2a2;
+}
