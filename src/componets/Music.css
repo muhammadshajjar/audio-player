@@ -19,8 +19,8 @@ ul {
 .player {
   max-width: 500px;
   width: 96%;
-  margin: 0 auto;
-  margin-top: 20px;
+  margin: 100px auto;
+
   background-color: var(--bg);
   border-radius: 5px;
 }
@@ -34,6 +34,11 @@ ul {
   overflow: scroll;
   margin: 0;
 }
+.list-container p {
+  text-align: center;
+  font-weight: bold;
+  color: rgb(243, 79, 79);
+}
 
 .player-list {
   padding: 13px;
@@ -43,15 +48,6 @@ ul {
 }
 .isActive {
   background-color: var(--active);
-}
-
-.btns {
-  background: none;
-  border: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 3px;
 }
 .time-btns {
   background-color: #b3b1b1;
@@ -90,11 +86,13 @@ ul {
   padding: 10px;
 }
 
-.dialog-list li {
-  padding: 13px;
+.dialog-list {
+  display: flex;
+  flex-direction: column;
 }
 
 .dialog-list li {
+  padding: 10px 0;
   border-top: 2px solid var(--border);
 }
 .dialog-list__label {
@@ -111,8 +109,8 @@ ul {
   border: transparent;
 }
 .input {
-  padding: 8px;
-  max-width: 182px;
+  padding: 10px;
+  max-width: 202px;
   width: 100%;
   border-radius: 4px;
   border: transparent;
@@ -124,4 +122,12 @@ ul {
   align-items: center;
   background-color: var(--player);
   padding: 0 10px 10px 10px;
+}
+
+.wrapper-class {
+  justify-content: center;
+}
+
+.ids-container {
+  display: flex;
 }

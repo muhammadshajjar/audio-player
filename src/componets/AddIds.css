@@ -1,9 +1,8 @@
 .tags-container {
-  max-width: 300px;
   background-color: #ececec;
   padding: 15px;
   border-radius: 5px;
-  margin-top: 40px;
+  flex: 1;
 }
 
 .ReactTags__tags {
@@ -90,7 +89,7 @@
   color: white;
 }
 
-.done-btn {
+.primary-btn {
   padding: 6px 10px;
   border-radius: 5px;
   border: none;
@@ -99,7 +98,12 @@
   margin-top: 10px;
   cursor: pointer;
 }
-.done-btn:disabled {
+.primary-btn:disabled {
   background-color: #aaa;
   cursor: not-allowed;
+}
+
+.btn-accent {
+  background-color: rgb(243, 79, 79);
+  align-self: flex-end;
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { WithContext as ReactTags } from "react-tag-input";
 
@@ -11,18 +11,25 @@ const KeyCodes = {
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
-const AddIds = ({ onGetIds, onDone }) => {
+const AddIds = ({ onGetIds, storedTags }) => {
   const [tags, setTags] = React.useState([]);
   const [btnDisable, setBtnDisable] = useState(true);
 
+  useEffect(() => {
+    if (storedTags) {
+      const newTags = storedTags?.map((item) => {
+        return { id: item, text: item };
+      });
+
+      setTags([...newTags]);
+    }
+  }, []);
   const handleDelete = (i) => {
     setTags(tags.filter((tag, index) => index !== i));
-    if (tags.length <= 1) {
-      setBtnDisable(true);
-    }
   };
 
   const handleAddition = (tag) => {
+    console.log(tags);
     if (tags.length < 5) {
       setTags([...tags, tag]);
     }
@@ -33,7 +40,6 @@ const AddIds = ({ onGetIds, onDone }) => {
     const upatedList = tags.map((item) => item.text);
     onGetIds(upatedList);
     setTags([]);
-    setBtnDisable(true);
   };
   return (
     <div className="tags-container">
@@ -47,11 +53,7 @@ const AddIds = ({ onGetIds, onDone }) => {
         placeholder="Add Ids"
         autocomplete
       />
-      <button
-        disabled={btnDisable}
-        onClick={doneButtonHandler}
-        className="done-btn"
-      >
+      <button onClick={doneButtonHandler} className="primary-btn">
         Done
       </button>
     </div>
