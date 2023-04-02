@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import { BsPlayFill, BsFillPauseFill } from "react-icons/bs";
-import { GrForwardTen, GrBackTen } from "react-icons/gr";
 import { IoSettingsSharp } from "react-icons/io5";
 import { BsToggleOff, BsToggleOn } from "react-icons/bs";
 import { Audio } from "react-loader-spinner";
 
 import "./Music.css";
+
 import AddIds from "./AddIds";
 
 const apiKey = "2d53ecdbbacf09343fe99a147929af9e";
@@ -154,10 +154,22 @@ const Music = () => {
       localStorage.setItem("settings", JSON.stringify(settings));
   }, [settings]);
 
-  const test = () => {
+  const applyAllSettingsHandler = () => {
     console.log(settings);
     const url = `${settings?.baseApi}${settings?.Ids?.join(",")}?key=${apiKey}`;
     if (url) fetchMusicHandler(url);
+  };
+
+  const handleDurationSelect = (e) => {
+    const durationInMillis = e.target.value * 60 * 1000;
+
+    console.log(durationInMillis);
+    audioTag.play();
+
+    setTimeout(() => {
+      console.log("called");
+      audioTag.pause();
+    }, durationInMillis);
   };
 
   return (
@@ -197,10 +209,10 @@ const Music = () => {
               ]}
             />
             <div className="pause-container">
-              <label htmlFor="pause">Pause After:</label>
+              <label htmlFor="pause">Pause After </label>
               <select
                 id="pause"
-                // onChange={handleDurationSelect}
+                onChange={handleDurationSelect}
                 className="input"
               >
                 <option value="default">Choose any option.</option>
@@ -238,7 +250,7 @@ const Music = () => {
                   visible={true}
                 />
               )}
-              {!loading && musicUrls.length == 0 && <p>No Data Found!</p>}
+              {!loading && musicUrls.length === 0 && <p>No Data Found!</p>}
             </ul>
             <div className="actions">
               <button className="actions-btn">
@@ -250,8 +262,10 @@ const Music = () => {
                 />
               </button>
               <button className="actions-btn" onClick={ToggleThemeHandler}>
-                {settings.theme == "light" && <BsToggleOff className="icons" />}
-                {settings.theme == "dark" && <BsToggleOn className="icons" />}
+                {settings.theme === "light" && (
+                  <BsToggleOff className="icons" />
+                )}
+                {settings.theme === "dark" && <BsToggleOn className="icons" />}
               </button>
             </div>
 
@@ -296,7 +310,10 @@ const Music = () => {
                     />
                   </li>
 
-                  <button className="primary-btn btn-accent" onClick={test}>
+                  <button
+                    className="primary-btn btn-accent"
+                    onClick={applyAllSettingsHandler}
+                  >
                     Apply All
                   </button>
                 </ul>
