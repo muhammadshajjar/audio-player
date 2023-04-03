@@ -8,7 +8,7 @@ import { Audio } from "react-loader-spinner";
 
 import "./Music.css";
 
-import AddIds from "./AddIds";
+import Settings from "./Settings";
 
 const apiKey = "2d53ecdbbacf09343fe99a147929af9e";
 
@@ -37,8 +37,13 @@ const Music = () => {
     }
     setFirstRender(false);
     setSettings(data);
-    setChangedApi(data?.baseApi || "");
+    setChangedApi(data?.baseApi || ""); //fix it latter
   }, []);
+
+  useEffect(() => {
+    if (!firstRender)
+      localStorage.setItem("settings", JSON.stringify(settings));
+  }, [settings]);
 
   const fetchMusicHandler = async (url) => {
     setMusicUrls([]);
@@ -55,7 +60,7 @@ const Music = () => {
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
-      console.log(err.message);
+      audioTag.src = "";
       alert("someting went wrong..");
     }
     setIsLoading(false);
@@ -65,7 +70,7 @@ const Music = () => {
     setIsSelected(index);
   };
 
-  const autoNext = (e) => {
+  const autoNext = () => {
     if (settings.autoPlay) {
       if (selected === musicUrls.length - 1) {
         setIsSelected(0);
@@ -113,17 +118,19 @@ const Music = () => {
     audioTag.currentTime -= 30;
   };
 
+  const changeApiHandler = (e) => {
+    setChangedApi(e.target.value);
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
+
     setSettings((prevSettings) => ({
       ...prevSettings,
       baseApi: changedApi,
     }));
+
     setChangedApi("");
-  };
-  const changeApiHandler = (e) => {
-    console.log("changed handler");
-    setChangedApi(e.target.value);
   };
 
   const ToggleThemeHandler = () => {
@@ -149,11 +156,6 @@ const Music = () => {
     }));
   };
 
-  useEffect(() => {
-    if (!firstRender)
-      localStorage.setItem("settings", JSON.stringify(settings));
-  }, [settings]);
-
   const applyAllSettingsHandler = () => {
     console.log(settings);
     const url = `${settings?.baseApi}${settings?.Ids?.join(",")}?key=${apiKey}`;
@@ -162,12 +164,9 @@ const Music = () => {
 
   const handleDurationSelect = (e) => {
     const durationInMillis = e.target.value * 60 * 1000;
-
-    console.log(durationInMillis);
     audioTag.play();
 
     setTimeout(() => {
-      console.log("called");
       audioTag.pause();
     }, durationInMillis);
   };
@@ -270,54 +269,16 @@ const Music = () => {
             </div>
 
             {toggleSettingModal && (
-              <div className="settings-dialog">
-                <ul className="dialog-list">
-                  <li className="flex">
-                    <span className="dialog-list__label">Automatic Play</span>
-                    <button className="auto-btn" onClick={autoPlayHandler}>
-                      {settings.autoPlay ? (
-                        <BsToggleOn className="icons" />
-                      ) : (
-                        <BsToggleOff className="icons" />
-                      )}
-                    </button>
-                  </li>
-                  <li>
-                    <form onSubmit={submitHandler} className="flex">
-                      <label
-                        className="dialog-list__label"
-                        id="api"
-                        htmlFor="api"
-                      >
-                        Change Api
-                      </label>
-                      <input
-                        type="text"
-                        name="api"
-                        className="input"
-                        placeholder="Enter Api"
-                        onChange={changeApiHandler}
-                        value={changedApi}
-                      />
-                    </form>
-                  </li>
-
-                  <li className="ids-container">
-                    <span className="dialog-list__label">Enter Id</span>
-                    <AddIds
-                      onGetIds={getIdsHandler}
-                      storedTags={settings.Ids}
-                    />
-                  </li>
-
-                  <button
-                    className="primary-btn btn-accent"
-                    onClick={applyAllSettingsHandler}
-                  >
-                    Apply All
-                  </button>
-                </ul>
-              </div>
+              <Settings
+                onChangedApi={changedApi}
+                settings={settings}
+                onAutoPlay={autoPlayHandler}
+                onSubmitApi={submitHandler}
+                onGetIds={getIdsHandler}
+                onApplyAllSettings={applyAllSettingsHandler}
+                onChangeApi={changeApiHandler}
+                changedApi={changedApi}
+              />
             )}
           </>
         }
