@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BsToggleOff, BsToggleOn } from "react-icons/bs";
 
 import AddIds from "./AddIds";
@@ -7,7 +7,6 @@ import "./Settings.css";
 const Settings = ({
   settings,
   onAutoPlay,
-  onSubmitApi,
   onGetIds,
   onApplyAllSettings,
   onChangeApi,
@@ -28,7 +27,7 @@ const Settings = ({
           </button>
         </li>
         <li>
-          <form onSubmit={onSubmitApi} className="flex">
+          <form className="flex">
             <label className="dialog-list__label" id="api" htmlFor="api">
               Change Api
             </label>

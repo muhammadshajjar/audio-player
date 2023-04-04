@@ -1,16 +1,27 @@
 import React, { useState, useEffect } from "react";
-import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
+
+//audio player libraray "https://github.com/lhz516/react-h5-audio-player"
+import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
-import { BsPlayFill, BsFillPauseFill } from "react-icons/bs";
+
+//icons & loadeer
+import {
+  BsPlayFill,
+  BsFillPauseFill,
+  BsToggleOff,
+  BsToggleOn,
+} from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
-import { BsToggleOff, BsToggleOn } from "react-icons/bs";
 import { Audio } from "react-loader-spinner";
 
+//componets
+import Settings from "./Settings";
 import "./Music.css";
 
-import Settings from "./Settings";
-
-const apiKey = "2d53ecdbbacf09343fe99a147929af9e";
+//constants
+const API_KEY = "2d53ecdbbacf09343fe99a147929af9e";
+const PROTOCOL = "http://";
+const END_POINTS = "/api/textUpload/uploads/";
 
 const DEFAULT_SETTINGS = {
   autoPlay: false,
@@ -31,13 +42,17 @@ const Music = () => {
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("settings")) || settings;
+
     if (data?.Ids?.length > 0) {
-      const url = `${data.baseApi}${data.Ids.join(",")}?key=${apiKey}`;
+      const url = `${PROTOCOL}${data.baseApi}${END_POINTS}${data.Ids.join(
+        ","
+      )}?key=${API_KEY}`;
+
       fetchMusicHandler(url);
     }
     setFirstRender(false);
     setSettings(data);
-    setChangedApi(data?.baseApi || ""); //fix it latter
+    setChangedApi(data?.baseApi || "");
   }, []);
 
   useEffect(() => {
@@ -51,7 +66,7 @@ const Music = () => {
       setIsLoading(true);
       const response = await fetch(url);
 
-      if (!response.ok) throw new Error("someting went wrong");
+      if (!response.ok) throw new Error("Something went wrong");
 
       const data = await response.json();
       const transfromedData = data.data.urls.filter((item) => item !== "null");
@@ -61,7 +76,7 @@ const Music = () => {
     } catch (err) {
       setIsLoading(false);
       audioTag.src = "";
-      alert("someting went wrong..");
+      alert(err);
     }
     setIsLoading(false);
   };
@@ -72,6 +87,9 @@ const Music = () => {
 
   const autoNext = () => {
     if (settings.autoPlay) {
+      audioTag.currentTime = 0;
+      audioTag.play();
+    } else {
       if (selected === musicUrls.length - 1) {
         setIsSelected(0);
       } else {
@@ -118,20 +136,27 @@ const Music = () => {
     audioTag.currentTime -= 30;
   };
 
-  const changeApiHandler = (e) => {
-    setChangedApi(e.target.value);
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      baseApi: e.target.value,
-    }));
-  };
-
   const ToggleThemeHandler = () => {
     const newTheme = settings.theme === "light" ? "dark" : "light";
 
     setSettings((prevSettings) => ({
       ...prevSettings,
       theme: newTheme,
+    }));
+  };
+
+  const autoPlayHandler = () => {
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      autoPlay: !prevSettings.autoPlay,
+    }));
+  };
+
+  const changeApiHandler = (e) => {
+    setChangedApi(e.target.value);
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      baseApi: e.target.value,
     }));
   };
 
@@ -149,16 +174,11 @@ const Music = () => {
       Ids: updatedIds,
     }));
   };
-  const autoPlayHandler = () => {
-    setSettings((prevSettings) => ({
-      ...prevSettings,
-      autoPlay: !prevSettings.autoPlay,
-    }));
-  };
 
   const applyAllSettingsHandler = () => {
-    console.log(settings);
-    const url = `${settings?.baseApi}${settings?.Ids?.join(",")}?key=${apiKey}`;
+    const url = `${PROTOCOL}${
+      settings?.baseApi
+    }${END_POINTS}${settings?.Ids?.join(",")}?key=${API_KEY}`;
     if (url) fetchMusicHandler(url);
   };
 
@@ -178,7 +198,7 @@ const Music = () => {
           <>
             <AudioPlayer
               className="audio-player"
-              autoPlay={settings.autoPlay}
+              loop={settings.autoPlay}
               src={musicUrls[selected]}
               progressJumpStep="3000"
               onEnded={autoNext}
@@ -187,7 +207,7 @@ const Music = () => {
               onClickPrevious={skipPrevHandler}
               showJumpControls={true}
               onLoadedMetaData={(e) => setAudioTag(e.target)}
-              defaultDuration={"Loading.."}
+              defaultDuration="Loading.."
               customIcons={{
                 play: <BsPlayFill />,
                 pause: <BsFillPauseFill />,

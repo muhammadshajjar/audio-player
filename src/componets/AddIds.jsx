@@ -31,7 +31,6 @@ const AddIds = ({ onGetIds, storedTags, onDeleteId }) => {
   };
 
   const handleAddition = (tag) => {
-    console.log(tags);
     if (tags.length < 5) {
       setTags([...tags, tag]);
     }
