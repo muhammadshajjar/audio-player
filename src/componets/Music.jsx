@@ -120,17 +120,10 @@ const Music = () => {
 
   const changeApiHandler = (e) => {
     setChangedApi(e.target.value);
-  };
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-
     setSettings((prevSettings) => ({
       ...prevSettings,
-      baseApi: changedApi,
+      baseApi: e.target.value,
     }));
-
-    setChangedApi("");
   };
 
   const ToggleThemeHandler = () => {
@@ -142,13 +135,20 @@ const Music = () => {
     }));
   };
 
-  const getIdsHandler = (ids) => {
+  const getIdHandler = (id) => {
     setSettings((prevSettings) => ({
       ...prevSettings,
-      Ids: ids,
+      Ids: [...prevSettings.Ids, id],
     }));
   };
 
+  const deleteIdHandler = (i) => {
+    const updatedIds = settings.Ids.filter((_, index) => index !== i);
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      Ids: updatedIds,
+    }));
+  };
   const autoPlayHandler = () => {
     setSettings((prevSettings) => ({
       ...prevSettings,
@@ -228,6 +228,7 @@ const Music = () => {
               {musicUrls.map((url, index) => (
                 <>
                   <li
+                    key={index}
                     className={
                       "player-list " +
                       `${musicUrls[selected] === url ? "isActive" : ""}`
@@ -270,14 +271,13 @@ const Music = () => {
 
             {toggleSettingModal && (
               <Settings
-                onChangedApi={changedApi}
                 settings={settings}
                 onAutoPlay={autoPlayHandler}
-                onSubmitApi={submitHandler}
-                onGetIds={getIdsHandler}
+                onGetIds={getIdHandler}
                 onApplyAllSettings={applyAllSettingsHandler}
                 onChangeApi={changeApiHandler}
                 changedApi={changedApi}
+                onDeleteId={deleteIdHandler}
               />
             )}
           </>

@@ -12,6 +12,7 @@ const Settings = ({
   onApplyAllSettings,
   onChangeApi,
   changedApi,
+  onDeleteId,
 }) => {
   return (
     <div className="settings-dialog">
@@ -44,7 +45,11 @@ const Settings = ({
 
         <li className="flex">
           <span className="dialog-list__label">Enter Id</span>
-          <AddIds onGetIds={onGetIds} storedTags={settings.Ids} />
+          <AddIds
+            onGetIds={onGetIds}
+            storedTags={settings.Ids}
+            onDeleteId={onDeleteId}
+          />
         </li>
 
         <button className="primary-btn btn-accent" onClick={onApplyAllSettings}>

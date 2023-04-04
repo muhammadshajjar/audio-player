@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { WithContext as ReactTags } from "react-tag-input";
 
-import "./AddIds.css";
+import "./AddIds.css"; //css provided by react-tag lib
 
 const KeyCodes = {
   comma: 188,
@@ -11,9 +11,8 @@ const KeyCodes = {
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
-const AddIds = ({ onGetIds, storedTags }) => {
+const AddIds = ({ onGetIds, storedTags, onDeleteId }) => {
   const [tags, setTags] = React.useState([]);
-  const [btnDisable, setBtnDisable] = useState(true);
 
   useEffect(() => {
     if (storedTags) {
@@ -24,8 +23,11 @@ const AddIds = ({ onGetIds, storedTags }) => {
       setTags([...newTags]);
     }
   }, []);
+
   const handleDelete = (i) => {
-    setTags(tags.filter((tag, index) => index !== i));
+    const updatedTags = tags.filter((tag, index) => index !== i);
+    setTags(updatedTags);
+    onDeleteId(i);
   };
 
   const handleAddition = (tag) => {
@@ -33,14 +35,9 @@ const AddIds = ({ onGetIds, storedTags }) => {
     if (tags.length < 5) {
       setTags([...tags, tag]);
     }
-    setBtnDisable(false);
+    onGetIds(tag.text);
   };
 
-  const doneButtonHandler = () => {
-    const upatedList = tags.map((item) => item.text);
-    onGetIds(upatedList);
-    setTags([]);
-  };
   return (
     <div className="tags-container">
       <ReactTags
@@ -53,9 +50,6 @@ const AddIds = ({ onGetIds, storedTags }) => {
         placeholder="Add Ids"
         autocomplete
       />
-      <button onClick={doneButtonHandler} className="primary-btn">
-        Done
-      </button>
     </div>
   );
 };
