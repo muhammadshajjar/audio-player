@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-//audio player libraray "https://github.com/lhz516/react-h5-audio-player"
+//audio player library "https://github.com/lhz516/react-h5-audio-player"
 import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 
-//icons & loadeer
+//icons
 import {
   BsPlayFill,
   BsFillPauseFill,
@@ -12,15 +12,16 @@ import {
   BsToggleOn,
 } from "react-icons/bs";
 import { IoSettingsSharp } from "react-icons/io5";
-import { Audio } from "react-loader-spinner";
 
 //componets
-import Settings from "./Settings";
-import "./Music.css";
+import Settings from "../componets/Settings";
+import playerStyles from "./MusicPlayer.module.css";
+import AudioList from "../componets/AudioList";
+import TimeBtn from "../ui/TimeBtn";
 
-//constants
+//api configurations
 const API_KEY = "2d53ecdbbacf09343fe99a147929af9e";
-const PROTOCOL = "http://";
+const PROTOCOL = `${window.location.protocol}//`;
 const END_POINTS = "/api/textUpload/uploads/";
 
 const DEFAULT_SETTINGS = {
@@ -30,10 +31,10 @@ const DEFAULT_SETTINGS = {
   theme: "light",
 };
 
-const Music = () => {
+const MusicPlayer = () => {
   const [selected, setIsSelected] = useState(0);
   const [musicUrls, setMusicUrls] = useState([]);
-  const [loading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [audioTag, setAudioTag] = useState(undefined);
   const [toggleSettingModal, setToggleSettingModal] = useState(false);
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
@@ -47,7 +48,6 @@ const Music = () => {
       const url = `${PROTOCOL}${data.baseApi}${END_POINTS}${data.Ids.join(
         ","
       )}?key=${API_KEY}`;
-
       fetchMusicHandler(url);
     }
     setFirstRender(false);
@@ -64,12 +64,12 @@ const Music = () => {
     setMusicUrls([]);
     try {
       setIsLoading(true);
-      const response = await fetch(url);
 
+      const response = await fetch(url);
       if (!response.ok) throw new Error("Something went wrong");
 
       const data = await response.json();
-      const transfromedData = data.data.urls.filter((item) => item !== "null");
+      const transfromedData = data.data.urls.filter((item) => item !== "null"); //transform the data as some urls are empty
 
       setMusicUrls(transfromedData);
       setIsLoading(false);
@@ -81,11 +81,7 @@ const Music = () => {
     setIsLoading(false);
   };
 
-  const selectParticularMusicHandler = (index) => {
-    setIsSelected(index);
-  };
-
-  const autoNext = () => {
+  const autoNextHandler = () => {
     if (settings.autoPlay) {
       audioTag.currentTime = 0;
       audioTag.play();
@@ -115,6 +111,7 @@ const Music = () => {
   };
 
   const tenPerForwardHandler = () => {
+    audioTag?.play();
     if (audioTag.currentTime) {
       const forwardTime = audioTag.duration * 0.1;
       audioTag.currentTime += forwardTime;
@@ -122,6 +119,7 @@ const Music = () => {
   };
 
   const tenPerBackHandler = () => {
+    audioTag?.play();
     if (audioTag.currentTime) {
       const backwardTime = audioTag.duration * 0.1;
       audioTag.currentTime -= backwardTime;
@@ -136,7 +134,7 @@ const Music = () => {
     audioTag.currentTime -= 30;
   };
 
-  const ToggleThemeHandler = () => {
+  const toggleThemeHandler = () => {
     const newTheme = settings.theme === "light" ? "dark" : "light";
 
     setSettings((prevSettings) => ({
@@ -183,7 +181,14 @@ const Music = () => {
   };
 
   const handleDurationSelect = (e) => {
-    const durationInMillis = e.target.value * 60 * 1000;
+    const userSelection = e.target.value;
+    let durationInMillis;
+    const selectedDuration = +userSelection.substring(0, 1);
+
+    if (userSelection.includes("h"))
+      durationInMillis = selectedDuration * 60 * 60 * 1000;
+    else durationInMillis = selectedDuration * 60 * 1000;
+
     audioTag.play();
 
     setTimeout(() => {
@@ -192,16 +197,19 @@ const Music = () => {
   };
 
   return (
-    <div className="player-container" data-theme={settings.theme}>
-      <div className="player">
+    <div
+      className={playerStyles["player-container"]}
+      data-theme={settings.theme}
+    >
+      <div className={playerStyles["player"]}>
         {
           <>
             <AudioPlayer
-              className="audio-player"
+              className={playerStyles["audio-player"]}
               loop={settings.autoPlay}
               src={musicUrls[selected]}
-              progressJumpStep="3000"
-              onEnded={autoNext}
+              progressJumpStep="3000" //you can modify jump steps by giving milliseconds to this prop
+              onEnded={autoNextHandler}
               showSkipControls={true}
               onClickNext={skipNextHandler}
               onClickPrevious={skipPrevHandler}
@@ -213,79 +221,55 @@ const Music = () => {
                 pause: <BsFillPauseFill />,
               }}
               customAdditionalControls={[
-                <button className="time-btns" onClick={tenPerBackHandler}>
-                  -10%
-                </button>,
-                <button className="time-btns" onClick={tenPerForwardHandler}>
-                  +10%
-                </button>,
-                <button className="time-btns" onClick={thirtySecBackHandler}>
-                  -30S
-                </button>,
-                <button className="time-btns" onClick={thirtySecForHandler}>
-                  +30S
-                </button>,
+                <TimeBtn label="-10%" onClick={tenPerBackHandler} />,
+                <TimeBtn label="+10%" onClick={tenPerForwardHandler} />,
+                <TimeBtn label="-30S" onClick={thirtySecBackHandler} />,
+                <TimeBtn label="+30S" onClick={thirtySecForHandler} />,
               ]}
             />
-            <div className="pause-container">
+            <div className={playerStyles["pause-container"]}>
               <label htmlFor="pause">Pause After </label>
               <select
                 id="pause"
                 onChange={handleDurationSelect}
-                className="input"
+                className={playerStyles["pause-input"]}
               >
                 <option value="default">Choose any option.</option>
-                <option value="1">1 Minute</option>
-                <option value="5">5 Minute</option>
-                <option value="10">10 Minute</option>
-                <option value="1">1 Hour</option>
-                <option value="2">2 Hour</option>
-                <option value="3">3 Hour</option>
+                <option value="1m">1 Minute</option>
+                <option value="5m">5 Minute</option>
+                <option value="10h">10 Minute</option>
+                <option value="1h">1 Hour</option>
+                <option value="2h">2 Hour</option>
+                <option value="3h">3 Hour</option>
               </select>
             </div>
 
-            <ul className="list-container">
-              {musicUrls.map((url, index) => (
-                <>
-                  <li
-                    key={index}
-                    className={
-                      "player-list " +
-                      `${musicUrls[selected] === url ? "isActive" : ""}`
-                    }
-                    onClick={selectParticularMusicHandler.bind(this, index)}
-                  >
-                    {url.slice(80, 110)}
-                  </li>
-                </>
-              ))}
-              {loading && (
-                <Audio
-                  height="100"
-                  width="100"
-                  color="#0075ff"
-                  ariaLabel="audio-loading"
-                  wrapperStyle={{}}
-                  wrapperClass="wrapper-class"
-                  visible={true}
-                />
-              )}
-              {!loading && musicUrls.length === 0 && <p>No Data Found!</p>}
-            </ul>
-            <div className="actions">
-              <button className="actions-btn">
+            <AudioList
+              musicUrls={musicUrls}
+              setIsSelected={setIsSelected}
+              selected={selected}
+              isLoading={isLoading}
+            />
+
+            <div className={playerStyles["actions"]}>
+              <button className={playerStyles["actions-btn"]}>
                 <IoSettingsSharp
-                  className="icons"
+                  className={playerStyles["icons"]}
                   onClick={() =>
                     setToggleSettingModal((prevState) => !prevState)
                   }
                 />
               </button>
-              <button className="actions-btn" onClick={ToggleThemeHandler}>
+              <button
+                className={playerStyles["actions-btn"]}
+                onClick={toggleThemeHandler}
+              >
                 {settings.theme === "light" && (
-                  <BsToggleOff className="icons" />
+                  <BsToggleOff className={playerStyles["icons"]} />
                 )}
-                {settings.theme === "dark" && <BsToggleOn className="icons" />}
+                {settings.theme === "dark" && (
+                  <BsToggleOn className={playerStyles["icons"]} />
+                )}
               </button>
             </div>
 
@@ -307,4 +291,4 @@ const Music = () => {
   );
 };
 
-export default Music;
+export default MusicPlayer;

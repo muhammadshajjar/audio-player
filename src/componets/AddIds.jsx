@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { WithContext as ReactTags } from "react-tag-input";
 
-import "./AddIds.css"; //css provided by react-tag lib
+import addIdsStyles from "./AddIds.module.css";
 
 const KeyCodes = {
   comma: 188,
@@ -38,7 +38,7 @@ const AddIds = ({ onGetIds, storedTags, onDeleteId }) => {
   };
 
   return (
-    <div className="tags-container">
+    <div className={addIdsStyles["tags-container"]}>
       <ReactTags
         inline
         inputFieldPosition="top"

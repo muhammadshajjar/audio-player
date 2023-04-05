@@ -1,12 +1,12 @@
 import React from "react";
-import Music from "./componets/Music";
+import MusicPlayer from "./player/MusicPlayer";
 
 import "./App.css";
 
 const App = () => {
   return (
     <>
-      <Music />
+      <MusicPlayer />
     </>
   );
 };

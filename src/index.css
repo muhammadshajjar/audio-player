@@ -4,3 +4,13 @@ body {
   margin: 0;
   font-family: "Roboto Mono", monospace;
 }
+li {
+  list-style-type: none;
+  cursor: pointer;
+}
+ul {
+  padding: 0;
+}
+p {
+  margin: 0;
+}

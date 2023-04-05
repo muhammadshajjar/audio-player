@@ -1,0 +1,24 @@
+.list__container {
+  padding: 0;
+  height: 340px;
+  overflow: scroll;
+  margin: 0;
+}
+.player__list {
+  padding: 13px;
+}
+.player__list + .player__list {
+  border-top: 2px solid var(--border);
+}
+.isActive {
+  background-color: var(--active);
+}
+.feedback {
+  text-align: center;
+  font-weight: bold;
+  color: rgb(243, 79, 79);
+  margin-top: 25px;
+}
+.wrapper-class {
+  justify-content: center;
+}

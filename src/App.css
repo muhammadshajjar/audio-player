@@ -11,3 +11,64 @@
   --active: #ddcccc;
   --border: #eca2a2;
 }
+
+/*override some styles of audio player library*/
+
+.rhap_additional-controls {
+  flex: auto;
+}
+
+/*css css provided by react-tag lib*/
+.ReactTags__tags {
+  position: relative;
+  line-break: anywhere;
+}
+
+/* Styles for the input */
+.ReactTags__tagInput {
+  border-radius: 2px;
+  display: inline-block;
+}
+.ReactTags__tagInput input.ReactTags__tagInputField,
+.ReactTags__tagInput input.ReactTags__tagInputField:focus {
+  height: 31px;
+  margin-bottom: 7px;
+  font-size: 12px;
+  border: 1px solid #c2c2c2;
+  min-width: 200px;
+  border-radius: 3px;
+}
+
+/* Styles for selected tags */
+.ReactTags__selected span.ReactTags__tag {
+  border: 1px solid #ddd;
+  background: #63bcfd;
+  color: white;
+  font-size: 12px;
+  display: inline-block;
+  padding: 5px;
+  border-radius: 2px;
+}
+
+.ReactTags__remove {
+  border: none;
+  cursor: pointer;
+  background: none;
+  color: white;
+}
+@media screen and (max-width: 490px) {
+  .rhap_controls-section {
+    flex-direction: column;
+  }
+  .rhap_additional-controls {
+    order: 2;
+    margin: 7px 0;
+  }
+  .rhap_main-controls {
+    order: 1;
+  }
+  .rhap_volume-controls {
+    order: 3;
+    width: 76px;
+  }
+}

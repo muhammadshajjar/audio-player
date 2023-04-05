@@ -1,8 +1,11 @@
 import React from "react";
+
+//icons
 import { BsToggleOff, BsToggleOn } from "react-icons/bs";
 
+//componets
 import AddIds from "./AddIds";
-import "./Settings.css";
+import settingsStyles from "./Settings.module.css";
 
 const Settings = ({
   settings,
@@ -14,27 +17,33 @@ const Settings = ({
   onDeleteId,
 }) => {
   return (
-    <div className="settings-dialog">
-      <ul className="dialog-list">
-        <li className="flex">
-          <span className="dialog-list__label">Automatic Play</span>
-          <button className="auto-btn" onClick={onAutoPlay}>
+    <div className={settingsStyles["settings-dialog"]}>
+      <ul className={settingsStyles["dialog-list"]}>
+        <li className={settingsStyles.flex}>
+          <span className={settingsStyles["dialog-list__label"]}>
+            Automatic Play
+          </span>
+          <button className={settingsStyles["auto-btn"]} onClick={onAutoPlay}>
             {settings.autoPlay ? (
-              <BsToggleOn className="icons" />
+              <BsToggleOn className={settingsStyles["icons"]} />
             ) : (
-              <BsToggleOff className="icons" />
+              <BsToggleOff className={settingsStyles["icons"]} />
             )}
           </button>
         </li>
         <li>
-          <form className="flex">
-            <label className="dialog-list__label" id="api" htmlFor="api">
+          <form className={settingsStyles.flex}>
+            <label
+              className={settingsStyles["dialog-list__label"]}
+              id="api"
+              htmlFor="api"
+            >
               Change Api
             </label>
             <input
               type="text"
               name="api"
-              className="input"
+              className={settingsStyles["dialog-list__input"]}
               placeholder="Enter Api"
               onChange={onChangeApi}
               value={changedApi}
@@ -42,8 +51,8 @@ const Settings = ({
           </form>
         </li>
 
-        <li className="flex">
-          <span className="dialog-list__label">Enter Id</span>
+        <li className={settingsStyles.flex}>
+          <span className={settingsStyles["dialog-list__label"]}>Enter Id</span>
           <AddIds
             onGetIds={onGetIds}
             storedTags={settings.Ids}
@@ -51,7 +60,10 @@ const Settings = ({
           />
         </li>
 
-        <button className="primary-btn btn-accent" onClick={onApplyAllSettings}>
+        <button
+          className={settingsStyles["btn-accent"]}
+          onClick={onApplyAllSettings}
+        >
           Apply All
         </button>
       </ul>
